@@ -1,11 +1,12 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.sparse as sp
 import re
 import math
 import warnings
 
-class PDESolver():
+class PDESolver1D():
+    """Class for solving PDEs using finite difference methods and method of lines."""
+
     def __init__(self, **kwargs):
         """Initiates all of the attributes of the PDE-object. Can either be passed in with kwargs or entered later with the associated method."""
         self._pde_tokens = None
@@ -59,7 +60,7 @@ class PDESolver():
                  self.set_initial_condition,
                  self.set_step_size,
                  self.set_interval,
-                 self.set_relative_tolerance)
+                 self.set_tolerance)
 
         for idx, func in enumerate(funcs):
             temp_kwargs = inputs[idx]
@@ -144,7 +145,7 @@ class PDESolver():
                 for j in range(self.u_vals.shape[1]):
                     if self.u_vals[i, j] > max_val:
                         max_val = self.u_vals[i, j]
-        return max_val
+        return float(max_val)
 
     def min_val(self) -> int|float:
         """Finds the minimum value of u(x,t) in the PDE."""
@@ -156,7 +157,7 @@ class PDESolver():
                 for j in range(self.u_vals.shape[1]):
                     if self.u_vals[i, j] < min_val:
                         min_val = self.u_vals[i, j]            
-        return min_val
+        return float(min_val)
 
 #-----Input methods-----
 
@@ -281,7 +282,7 @@ class PDESolver():
             setattr(self, attributes[i], interval)
         return
 
-    def set_relative_tolerance(self, reltol:int|float):
+    def set_tolerance(self, reltol:int|float=None):
         """Sets the relative tolerance for newtons multivariate method when solving non-linear PDE's. The standard relative tolerance is 10^-6."""
         allowed_data_types = (int, float, 
                               np.int8, np.int16, np.int32, np.int64, 

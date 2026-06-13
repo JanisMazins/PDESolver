@@ -14,12 +14,12 @@ Clone the repository:
 <pre>git clone https://github.com/JanisMazins/PDESolver.git </pre>
 Then:
 ```python
-import PDESolver as pde
+import src as pde
 ```
 Or:
 ```python
-from PDESolver import PDESolver
-from PDESolver import plot_pde #Optional; used for plotting
+from src.PDESolver import PDESolver
+from src.pdeplot import plot_pde #Optional; used for plotting
 ```
 
 ### Dependencies
