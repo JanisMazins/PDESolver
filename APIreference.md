@@ -4,6 +4,7 @@
 
 Takes all of the key word arguments described by the set-methods below. For example:
 ```python
+from src.PDESolver import *
 PDE = PDESolver1D(pdestr="dudt-d2udx2=0", initial_condition="x")
 ```
 Here are the equavalent default values for the variables in a PDESolver1D object:
@@ -102,7 +103,7 @@ Examples:
 PDE.interval(space_interval=(-1, 1), time_interval=(0, 1))#Solves the PDE for a function u(x, t), -1<x<1 and 0<t<1.
 ```
 
-### set_relative_tolerance(reltol=None)
+### set_tolerance(reltol=None)
 
 - reltol:
     - Represents the tolerance for Newton Raphson when solving non linear systems (not yet implemented). 

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from PDESolver import PDESolver
+from PDESolver1D import PDESolver1D
 from pdeplot import plot_pde
 
 class TestPDE(unittest.TestCase):
@@ -9,31 +9,31 @@ class TestPDE(unittest.TestCase):
 
     def test_0set_boundry(self):
         """Checks if start boundry is set."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_boundry(start_boundry=(10, "n"))
         self.assertEqual(PDE._start_boundry, (10, "n"))
 
     def test_1set_boundry(self):
         """Checks if end boundry is set."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_boundry(end_boundry=(10, "n"))
         self.assertEqual(PDE._end_boundry, (10, "n"))
 
     def test_2set_boundry(self):
         """Checks behavior when no boundry is inputed."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_boundry()
         self.assertEqual(PDE._end_boundry, (0, "d"))   
         self.assertEqual(PDE._start_boundry, (0, "d"))
 
     def test_3set_boundry(self):
         """Checks behavior when an invalid boundry is inputed."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         self.assertRaises(ValueError, PDE.set_boundry, start_boundry=(None, 1), end_boundry=(None, 1))
 
     def test_4set_boundry(self):
         """Checks behavior when an expression is passed as the boundry condition tuple's first element."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = ["0",
                    "t",
                    "5*t",
@@ -56,7 +56,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0set_step_size(self):
         """Checks if dx is modified."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,10))
         PDE.set_step_size(dx=10)
         dx = PDE._dx
@@ -64,72 +64,72 @@ class TestPDE(unittest.TestCase):
 
     def test_1set_step_size(self):
         """Checks if dt is modified."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_step_size(dt=10)
         dt = PDE._dt
         self.assertEqual(dt, 10)
 
     def test_2set_step_size(self):
         """Checks behavior without input kwargs."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_step_size()
         self.assertEqual(PDE._dx, 10**-3)
         self.assertEqual(PDE._dt, 10**-3)
 
     def test_3set_step_size(self):
         """Checks behavior when an invalid step size is inputed."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         self.assertRaises(TypeError, PDE.set_step_size, dx="1", dt="1")
         
 #-----set_interval-----
 
     def test_0set_interval(self):
         """Checks if space interval is modified."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(10,20))
         self.assertEqual(PDE._space_interval, (10,20))
 
     def test_1set_interval(self):
         """Checks if time interval is modified."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(time_interval=(10,20))
         self.assertEqual(PDE._time_interval, (10,20))
 
     def test_2set_interval(self):
         """Check behavior without input kwargs."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval()
         self.assertEqual(PDE._space_interval, (0,1))
         self.assertEqual(PDE._time_interval, (0,1))
 
     def test_3set_interval(self):
         """Checks behavior when an invalid interval is inputed."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         self.assertRaises(ValueError, PDE.set_interval, time_interval=(None, True), space_interval=(None, True))
 
-#-----set_relative_tolerance-----
+#-----set_tolerance-----
 
-    def test_0set_relative_tolerance(self):
+    def test_0set_tolerance(self):
         """Checks if relative tolerance is modified."""
-        PDE = PDESolver()
-        PDE.set_relative_tolerance(1)
+        PDE = PDESolver1D()
+        PDE.set_tolerance(reltol=1)
         self.assertEqual(PDE._reltol, 1)
 
-    def test_1set_relative_tolerance(self):
+    def test_1set_tolerance(self):
         """Check behavior without input args."""
-        PDE = PDESolver()
-        self.assertRaises(TypeError, PDE.set_relative_tolerance)
+        PDE = PDESolver1D()
+        self.assertRaises(TypeError, PDE.set_tolerance)
 
-    def test_1set_relative_tolerance(self):
+    def test_1set_tolerance(self):
         """Check behavior when an invalid relative tolerance is given."""
-        PDE = PDESolver()
-        self.assertRaises(ValueError, PDE.set_relative_tolerance, -1)
+        PDE = PDESolver1D()
+        self.assertRaises(ValueError, PDE.set_tolerance, reltol=-1)
 
 #-----_match_dx_to_n_x-----
 
     def test_0_match_dx_to_n_x(self):
         """Tests if the attribute _dx is rounded correctly."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0, 10))
         PDE.set_step_size(dx=11)
         PDE._match_dx_to_n_x()
@@ -137,7 +137,7 @@ class TestPDE(unittest.TestCase):
 
     def test_1_match_dx_to_n_x(self):
         """Tests if a ValueError is raised when incompatible space interval and dx are inputed."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0, 1))
         self.assertRaises(ValueError, PDE.set_step_size, dx=100)
 
@@ -145,7 +145,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_pde_tokens(self):
         """Tests if some given PDEs with correct syntax are tokenized correctly."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = ["dudt-d2udx2=0",
                    "d2udt2-d2udx2=0",
                    "d2udt2+d2udx2=0",
@@ -161,7 +161,7 @@ class TestPDE(unittest.TestCase):
 
     def test_1_get_pde_tokens(self):
         """Tests if some given PDEs with incorrect syntax are rejected."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = ["+dudt-d2udx2=0",
                    "d2udt22-d2udx2=0",
                    "dd2udt2+d2udx2=0",
@@ -181,7 +181,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_expression_tokens(self):
         """Tests if some given initial conditions with correct syntax are tokenized correctly."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = ["0",
                    "x",
                    "5*x",
@@ -202,7 +202,7 @@ class TestPDE(unittest.TestCase):
 
     def test_1_get_expression_tokens(self):
         """Tests if some given initial conditions with incorrect syntax are rejected."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = ["0.00.",
                    "5x",
                    "xx",
@@ -218,7 +218,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_set_initial_condition(self):
         """Tests if incorrectly formatted initial condition lists/tuples are rejected."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         initial_conditions = ([1, 2, "3"],
                               ["1", "2", "3"],
                               [True, False, False],
@@ -233,7 +233,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_time_order(self):
         """Tests if some given PDEs return correct time order."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         strings = {"dudt-d2udx2=0":1,
                    "d2udt2-d2udx2=0":2,
                    "d2udt2+d2udx2=0":2,
@@ -249,7 +249,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_initial_condition(self):
         """Tests if initial function returns expected numpy vector."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,100))
         PDE.set_step_size(dx=1)
         PDE.set_pde("dudt=0")
@@ -285,7 +285,7 @@ class TestPDE(unittest.TestCase):
             
     def test_1_get_initial_condition(self):
         """Tests if initial derivative returns expected numpy vector. The initial condition for u(x,t) is set to 0."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,100))
         PDE.set_pde("d2udt2=0")
         PDE.set_step_size(dx=1)
@@ -325,7 +325,7 @@ class TestPDE(unittest.TestCase):
 
     def test_2_get_initial_condition(self):
         """Tests if initial condition functions u(x,0), when inputed as lists or tuples, return a correct initial condition."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(1,100))
         PDE.set_step_size(dx=1)
         PDE.set_pde("dudt=0")
@@ -350,7 +350,7 @@ class TestPDE(unittest.TestCase):
 
     def test_3_get_initial_condition(self):
         """Tests if initial condition derivatives du/dt(x, 0), when inputed as lists or tuples, return a correct initial condition."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,100))
         PDE.set_pde("d2udt2=0")
         PDE.set_step_size(dx=1)
@@ -388,7 +388,7 @@ class TestPDE(unittest.TestCase):
         false_pde_strings = {f"{term_1}{op}{term_2}=0":False for term_1 in derivatives for op in operations_2 for term_2 in derivatives}
         strings = true_pde_strings | false_pde_strings
         
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         for string in strings:
             PDE.set_pde(string)
             self.assertEqual(strings[string], PDE._is_linear(PDE._pde_tokens))
@@ -415,7 +415,7 @@ class TestPDE(unittest.TestCase):
                    "dudt+1/dudx=0":False,
                    "1/dudt^1.000001=0":False}
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         for string in strings:
             PDE.set_pde(string)
             self.assertEqual(strings[string], PDE._is_linear(PDE._pde_tokens))
@@ -435,7 +435,7 @@ class TestPDE(unittest.TestCase):
                    "d2udt2*t+dudt*t^2+d2udx2*t^3=0":True,
                    "t*dudt*t*t=0":True}
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         for string in strings:
             PDE.set_pde(string)
             self.assertEqual(strings[string], PDE._A_time_dependent)
@@ -455,7 +455,7 @@ class TestPDE(unittest.TestCase):
                    "t*t*t*x*dudx+x*t=0":True,
                    "t=0":True}
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         for string in strings:
             PDE.set_pde(string)
             self.assertEqual(strings[string], PDE._g_time_dependent)
@@ -473,7 +473,7 @@ class TestPDE(unittest.TestCase):
                    "dudt=d2udx2":([], ["-", "1"], ["+", "1"], [], [], []),
                    "d2udt2*t+dudt*t^2+d2udx2*t^3=x*u*t-x^2":([], ["+","1","*","t","^","3"], ["+","1","*","t","^","2"], ["+","1","*","t"], ["-","x","*","1","*","t"], ["+","x","^","2"])}
         
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         for string in strings:
             PDE.set_pde(string)
             self.assertEqual(strings[string], PDE._get_derivative_coefficient_expressions())
@@ -483,7 +483,7 @@ class TestPDE(unittest.TestCase):
     def test_0_evaluate_derivative_coefficient_expression(self):
         """Checks if a set of PDEs get the correct numpy vectors for the coefficients c1, c2, c3, c4, c5 and r (c1(x,t)*dudx + c2(x,t)*d2udx2 + c3(x,t)*dudt + c4(x,t)*d2udt2 c5(x,t)*u + r(x,t) = 0)
         evaluated in x and t. Every component of the vectors for c1, ... represent the expression evaluated in x_i."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(1,10))
         PDE.set_step_size(dx=1)
         strings = {"dudx=0":(np.ones((10, 1)), np.zeros((10, 1)), np.zeros((10, 1)), np.zeros((10, 1)), np.zeros((10, 1)), np.zeros((10, 1))),
@@ -515,7 +515,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_linear_matrix(self):
         """Checks if the returned matrix for A matches the manually calculated theoretical matrix A for a given differential equation."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,2))
         PDE.set_step_size(dx=1)
         PDE.set_boundry(start_boundry=(3, "n"), end_boundry=(3, "n"))
@@ -533,7 +533,7 @@ class TestPDE(unittest.TestCase):
     
     def test_1_get_linear_matrix(self):
         """Checks if the returned matrix for A matches the manually calculated theoretical matrix A for a given differential equation."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,2))
         PDE.set_step_size(dx=1)
         PDE.set_boundry(start_boundry=(3, "n"), end_boundry=(3, "n"))
@@ -555,7 +555,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_linear_forcing_term(self):
         """Tests if a correct linear forcing term is produced for a given differential equation of first time order with Neumann boundries."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,2))
         PDE.set_step_size(dx=1)
         PDE.set_boundry(start_boundry=(7, "n"), end_boundry=(3, "n"))
@@ -571,7 +571,7 @@ class TestPDE(unittest.TestCase):
 
     def test_0_get_linear_forcing_term(self):
         """Tests if a correct linear forcing term is produced for a given differential equation of second time order with Neumann boundries."""
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_interval(space_interval=(0,2))
         PDE.set_step_size(dx=1)
         PDE.set_boundry(start_boundry=(7, "n"), end_boundry=(3, "n"))
@@ -601,7 +601,7 @@ class TestPDE(unittest.TestCase):
                     0.16,
                     0.12)
 
-        PDE = PDESolver(pde_str="dudt-d2udx2=0", dx=0.1)
+        PDE = PDESolver1D(pde_str="dudt-d2udx2=0", dx=0.1)
         for idx, func in enumerate(initial_functions):
             PDE.set_initial_condition(initial_function=func)
             PDE.solve()
@@ -620,7 +620,7 @@ class TestPDE(unittest.TestCase):
                     -0.16,
                     -0.12)
 
-        PDE = PDESolver(pde_str="dudt-d2udx2=0", dx=0.1)
+        PDE = PDESolver1D(pde_str="dudt-d2udx2=0", dx=0.1)
         for idx, func in enumerate(initial_functions):
             PDE.set_initial_condition(initial_function=func)
             PDE.solve()
@@ -644,7 +644,7 @@ class TestPDE(unittest.TestCase):
                    [["2.718281828", "^", "x"]],
                    [["x", "^", "2"], ["x"]])
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
 
         for idx, token in enumerate(tokens):
             ans = PDE._separate_into_terms(token)
@@ -662,7 +662,7 @@ class TestPDE(unittest.TestCase):
                  np.zeros((998, 1)))
 
         for i, arr in enumerate(before):
-            PDE = PDESolver(pde_str="dudt-d2udx2=0")
+            PDE = PDESolver1D(pde_str="dudt-d2udx2=0")
             ans = PDE._resize_v0(arr)
             for j, elem in enumerate(ans):
                 self.assertEqual(elem, after[i][j, 0])
@@ -678,7 +678,7 @@ class TestPDE(unittest.TestCase):
                  np.zeros((999, 1)))
 
         for i, arr in enumerate(before):
-            PDE = PDESolver(pde_str="dudt-d2udx2=0", start_boundry=(0, "n"))
+            PDE = PDESolver1D(pde_str="dudt-d2udx2=0", start_boundry=(0, "n"))
             ans = PDE._resize_v0(arr)
             for j, elem in enumerate(ans):
                 self.assertEqual(elem, after[i][j, 0])
@@ -693,7 +693,7 @@ class TestPDE(unittest.TestCase):
                  np.zeros((999, 1)))
 
         for i, arr in enumerate(before):
-            PDE = PDESolver(pde_str="dudt-d2udx2=0", end_boundry=(0, "n"))
+            PDE = PDESolver1D(pde_str="dudt-d2udx2=0", end_boundry=(0, "n"))
             ans = PDE._resize_v0(arr)
             for j, elem in enumerate(ans):
                 self.assertEqual(elem, after[i][j, 0])   
@@ -708,7 +708,7 @@ class TestPDE(unittest.TestCase):
                  np.zeros((1000, 1)))
 
         for i, arr in enumerate(before):
-            PDE = PDESolver(pde_str="dudt-d2udx2=0", start_boundry=(0, "n"), end_boundry=(0, "n"))
+            PDE = PDESolver1D(pde_str="dudt-d2udx2=0", start_boundry=(0, "n"), end_boundry=(0, "n"))
             ans = PDE._resize_v0(arr)
             for j, elem in enumerate(ans):
                 self.assertEqual(elem, after[i][j, 0])
@@ -731,7 +731,7 @@ class TestPDE(unittest.TestCase):
                    7/var_eval**var_eval,
                    -1-1)
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
 
         for idx, expr in enumerate(expressions):
             ans = PDE._evaluate(expr, var_eval)
@@ -759,7 +759,7 @@ class TestPDE(unittest.TestCase):
                    ["7", "/", "x", "*", "1"],
                    ["1", "/", "t"])
         
-        PDE = PDESolver()
+        PDE = PDESolver1D()
 
         for idx, expr in enumerate(expressions):
             ans = PDE._strip_factor(expr, factors[idx])
@@ -785,7 +785,7 @@ class TestPDE(unittest.TestCase):
         t_idx = 0
         t_vals = np.array([0, 1, 2, 3])
 
-        PDE = PDESolver()
+        PDE = PDESolver1D()
 
         for idx, v in enumerate(vectors):
             n = answers[idx].shape[0]
@@ -800,7 +800,7 @@ class TestPDE(unittest.TestCase):
 #-----Manual testing-----
 
     def test_print_test_for_manual_testing(self):
-        PDE = PDESolver()
+        PDE = PDESolver1D()
         PDE.set_pde("d2udt2-d2udx2=0")
         PDE.set_interval(space_interval=(0,5))
         PDE.set_step_size(dx=1)
